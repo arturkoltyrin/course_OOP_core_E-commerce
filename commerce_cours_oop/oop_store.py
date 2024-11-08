@@ -6,7 +6,10 @@ class Product:
         self.quantity = quantity
 
     def __repr__(self):
-        return f"Product(name={self.name}, price={self.price}, quantity={self.quantity})"
+        return (
+            f"Product(name={self.name}, price={self.price}, quantity={self.quantity})"
+        )
+
 
 class Category:
     total_categories = 0

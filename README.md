@@ -2,7 +2,7 @@
 Чтобы установить и использовать проект, выполните следующие шаги:
 
 Клонирование репозитория
-git clone https://github.com/arturkoltyrin/SuccBankTransactions.git
+git clone https://github.com/arturkoltyrin/course_OOP_core_E-commerce
 
 Установка зависимостей
 Убедитесь, что у вас установлен Poetry.
