@@ -1,6 +1,7 @@
-import os
 import json
-from oop_store import Product, Category
+import os
+
+from oop_store import Category, Product
 
 
 def load_data_from_json(file_name: str):
