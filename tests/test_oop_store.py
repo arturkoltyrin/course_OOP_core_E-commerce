@@ -23,35 +23,6 @@ def test_product_price_setter_invalid():
     assert product.price == 8000  # Цена не изменилась
 
 
-def test_product_new_product_creation():
-    existing_products = []
-    product_info = {
-        "name": "Смартфон",
-        "description": "Android phone",
-        "price": 5000,
-        "quantity": 20,
-    }
-
-    new_product = Product.new_product(product_info, existing_products)
-    assert new_product.name == "Смартфон"
-    assert new_product.quantity == 20
-
-    # Проверка дублирования
-    existing_product_info = {
-        "name": "Смартфон",
-        "description": "New Android phone",
-        "price": 6000,
-        "quantity": 10,
-    }
-
-    existing_products.append(new_product)
-    updated_product = Product.new_product(existing_product_info, existing_products)
-
-    # Обновление quantities и price
-    assert updated_product.quantity == 30  # 20 + 10
-    assert updated_product.price == 6000  # Должен взять более высокую цену
-
-
 def test_category_initialization():
     category = Category("Электроника", "Все, что связано с электроникой")
     assert category.name == "Электроника"

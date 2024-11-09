@@ -23,40 +23,32 @@ class Product:
         )
 
     @classmethod
-    def new_product(cls, product_info, existing_products):
-        """Создание нового продукта или добавление к существующему."""
+    def new_product(cls, product_info):
+        """Создание нового продукта."""
         name = product_info["name"]
         price = product_info["price"]
         description = product_info["description"]
         quantity = product_info["quantity"]
 
-        # Проверка на дубликаты
-        for existing_product in existing_products:
-            if existing_product.name == name:
-                existing_product.quantity += quantity
-                if price > existing_product.price:
-                    existing_product.price = price
-                return existing_product  # Возвращаем существующий продукт
-
-        # Если продукт не найден, создаем новый
+        # Создаем новый продукт и возвращаем его
         return cls(name, description, price, quantity)
 
 
 class Category:
     total_categories = 0
-    total_products = 0
+    product_count = 0
 
     def __init__(self, name: str, description: str):
         self.name = name
         self.description = description
-        self.__products = []  # Приватный атрибут для списка продуктов
+        self.__products = []  # Создан приватный атрибут для списка продуктов
 
         # Увеличиваем количество категорий
         Category.total_categories += 1
 
     def add_product(self, product: Product):
         self.__products.append(product)
-        Category.total_products += 1
+        Category.product_count += 1 # Исправил замечание на product_count
 
     @property
     def products(self):
