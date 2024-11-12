@@ -42,3 +42,27 @@ def test_category_products_property():
         "Телевизор, 8000 руб. Остаток: 10 шт.\nСмартфон, 5000 руб. Остаток: 20 шт."
     )
     assert category.products == expected_output
+
+
+def test_category_str():
+    category = Category("Электроника", "Все, что связано с электроникой")
+    product1 = Product("Телевизор", "4K UHD", 8000, 10)
+    product2 = Product("Смартфон", "Android phone", 5000, 20)
+
+    category.add_product(product1)
+    category.add_product(product2)
+
+    assert str(category) == "Электроника, количество продуктов: 30 шт."
+
+
+def test_product_str():
+    product = Product("Телевизор", "4K UHD", 8000, 10)
+    assert str(product) == "Телевизор, 8000 руб. Остаток: 10 шт."
+
+
+def test_product_addition():
+    product1 = Product("Телевизор", "4K UHD", 8000, 10)  # 80000
+    product2 = Product("Смартфон", "Android phone", 5000, 20)  # 100000
+
+    total_value = product1 + product2
+    assert total_value == 180000
