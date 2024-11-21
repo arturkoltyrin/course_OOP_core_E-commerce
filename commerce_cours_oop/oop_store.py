@@ -22,24 +22,82 @@ class Product:
             f"Product(name={self.name}, price={self.price}, quantity={self.quantity})"
         )
 
-    def __str__(self):
-        """Строковое представление продукта."""
-        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
-
     def __add__(self, other):
-        """Суммирование полной стоимости двух товаров."""
-        if isinstance(other, Product):
-            return (self.price * self.quantity) + (other.price * other.quantity)
-        return NotImplemented
+        if type(self) != type(other):
+            raise TypeError("Нельзя складывать продукты разных типов.")
+        total_quantity = self.quantity + other.quantity
+        return Product(self.name, self.description, self.price, total_quantity)
+
+
+class Smartphone(Product):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        efficiency: float,
+        model: str,
+        memory: int,
+        color: str,
+    ):
+        super().__init__(name, description, price, quantity)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+    def __repr__(self):
+        return (f"Smartphone({super().__repr__()}, efficiency={self.efficiency}, "
+                f"model={self.model}, memory={self.memory}, color={self.color})")
 
     @classmethod
     def new_product(cls, product_info):
-        """Создание нового продукта."""
-        name = product_info["name"]
-        price = product_info["price"]
-        description = product_info["description"]
-        quantity = product_info["quantity"]
-        return cls(name, description, price, quantity)
+        """Создание нового смартфона."""
+        return cls(
+            product_info["name"],
+            product_info["description"],
+            product_info["price"],
+            product_info["quantity"],
+            product_info["efficiency"],
+            product_info["model"],
+            product_info["memory"],
+            product_info["color"],
+        )
+
+
+class LawnGrass(Product):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        country: str,
+        germination_period: int,
+        color: str,
+    ):
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
+
+    def __repr__(self):
+        return (f"LawnGrass({super().__repr__()}, country={self.country}, "
+                f"germination_period={self.germination_period}, color={self.color})")
+
+    @classmethod
+    def new_product(cls, product_info):
+        """Создание новой травы газонной."""
+        return cls(
+            product_info["name"],
+            product_info["description"],
+            product_info["price"],
+            product_info["quantity"],
+            product_info["country"],
+            product_info["germination_period"],
+            product_info["color"],
+        )
 
 
 class Category:
@@ -49,39 +107,25 @@ class Category:
     def __init__(self, name: str, description: str):
         self.name = name
         self.description = description
-        self.__products = []  # Приватный атрибут для списка продуктов
+        self.__products = []
+        # Увеличиваем количество категорий
         Category.total_categories += 1
 
     def add_product(self, product: Product):
+        if not isinstance(product, (Smartphone, LawnGrass, Product)):
+            raise TypeError("Можно добавлять только продукты или их наследники.")
         self.__products.append(product)
-        Category.product_count += 1  # Исправил замечание на product_count
+        Category.product_count += 1
 
     @property
     def products(self):
         """Геттер для получения списка продуктов в строковом формате."""
-        return "\n".join(str(product) for product in self.__products)
+        return "\n".join(
+            [
+                f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт."
+                for product in self.__products
+            ]
+        )
 
     def __repr__(self):
-        total_quantity = sum(product.quantity for product in self.__products)
-        return f"Category(name={self.name}, total_products={total_quantity})"
-
-    def __str__(self):
-        """Строковое представление категории."""
-        total_quantity = sum(product.quantity for product in self.__products)
-        return f"{self.name}, количество продуктов: {total_quantity} шт."
-
-
-class CategoryIterator:
-    def __init__(self, category: Category):
-        self._category = category
-        self._index = 0
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self._index < len(self._category._Category__products):
-            product = self._category._Category__products[self._index]
-            self._index += 1
-            return product
-        raise StopIteration
+        return f"Category(name={self.name}, total_products={len(self.__products)})"
