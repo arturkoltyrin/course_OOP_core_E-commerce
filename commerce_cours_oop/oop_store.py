@@ -36,7 +36,9 @@ class Product(LoggingMixin, BaseProduct):
             self.__price = value
 
     def __repr__(self):
-        return f"Product(name={self.name}, price={self.price}, quantity={self.quantity})"
+        return (
+            f"Product(name={self.name}, price={self.price}, quantity={self.quantity})"
+        )
 
     def __add__(self, other):
         if type(self) != type(other):
@@ -47,8 +49,17 @@ class Product(LoggingMixin, BaseProduct):
 
 # Класс смартфонов
 class Smartphone(Product):
-    def __init__(self, name: str, description: str, price: float,
-                 quantity: int, efficiency: float, model: str, memory: int, color: str):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        efficiency: float,
+        model: str,
+        memory: int,
+        color: str,
+    ):
         super().__init__(name, description, price, quantity)
         self.efficiency = efficiency
         self.model = model
@@ -56,8 +67,10 @@ class Smartphone(Product):
         self.color = color
 
     def __repr__(self):
-        return (f"Smartphone({super().__repr__()}, efficiency={self.efficiency}, "
-                f"model={self.model}, memory={self.memory}, color={self.color})")
+        return (
+            f"Smartphone({super().__repr__()}, efficiency={self.efficiency}, "
+            f"model={self.model}, memory={self.memory}, color={self.color})"
+        )
 
     @classmethod
     def new_product(cls, product_info):
@@ -70,21 +83,32 @@ class Smartphone(Product):
             product_info["efficiency"],
             product_info["model"],
             product_info["memory"],
-            product_info["color"], )
+            product_info["color"],
+        )
 
 
 # Класс газонной травы
 class LawnGrass(Product):
-    def __init__(self, name: str, description: str, price: float,
-                 quantity: int, country: str, germination_period: int, color: str):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        country: str,
+        germination_period: int,
+        color: str,
+    ):
         super().__init__(name, description, price, quantity)
         self.country = country
         self.germination_period = germination_period
         self.color = color
 
     def __repr__(self):
-        return (f"LawnGrass({super().__repr__()}, country={self.country}, "
-                f"germination_period={self.germination_period}, color={self.color})")
+        return (
+            f"LawnGrass({super().__repr__()}, country={self.country}, "
+            f"germination_period={self.germination_period}, color={self.color})"
+        )
 
     @classmethod
     def new_product(cls, product_info):
@@ -96,7 +120,8 @@ class LawnGrass(Product):
             product_info["quantity"],
             product_info["country"],
             product_info["germination_period"],
-            product_info["color"], )
+            product_info["color"],
+        )
 
 
 # Класс категорий
@@ -120,8 +145,10 @@ class Category:
     def products(self):
         """Геттер для получения списка продуктов в строковом формате."""
         return "\n".join(
-            [f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт."
-             for product in self.__products]
+            [
+                f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт."
+                for product in self.__products
+            ]
         )
 
     def __repr__(self):
@@ -136,8 +163,10 @@ class Order:
         self.total_price = product.price * quantity
 
     def __repr__(self):
-        return (f"Order(product={self.product.name}, quantity={self.quantity}, "
-                f"total_price={self.total_price})")
+        return (
+            f"Order(product={self.product.name}, quantity={self.quantity}, "
+            f"total_price={self.total_price})"
+        )
 
 
 # Абстрактный класс для заказов и категорий

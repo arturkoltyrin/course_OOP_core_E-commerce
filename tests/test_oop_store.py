@@ -12,7 +12,7 @@ def test_smartphone_creation():
         efficiency=5.0,
         model="A2634",
         memory=256,
-        color="синий"
+        color="синий",
     )
     assert smartphone.name == "iPhone 13"
     assert smartphone.price == 799.99
@@ -28,7 +28,7 @@ def test_lawn_grass_creation():
         quantity=50,
         country="Россия",
         germination_period=14,
-        color="зеленый"
+        color="зеленый",
     )
     assert lawn_grass.name == "Газонная трава ЛУГА"
     assert lawn_grass.price == 25.5
@@ -47,9 +47,9 @@ def test_category_add_product():
         efficiency=5.0,
         model="A2634",
         memory=256,
-        color="синий"
+        color="синий",
     )
 
     category.add_product(smartphone)
-    assert len(category.products.split('\n')) == 1
+    assert len(category.products.split("\n")) == 1
     assert "iPhone 13" in category.products
