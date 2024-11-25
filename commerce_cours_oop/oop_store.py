@@ -1,5 +1,23 @@
-class Product:
+from abc import ABC, abstractmethod
+
+
+# Абстрактный класс для продуктов
+class BaseProduct(ABC):
+    @abstractmethod
+    def __repr__(self):
+        pass
+
+
+# Миксин для логирования
+class LoggingMixin:
+    def __init__(self):
+        print(f"Создан объект {self.__class__.__name__}")
+
+
+# Базовый класс для продуктов
+class Product(LoggingMixin, BaseProduct):
     def __init__(self, name: str, description: str, price: float, quantity: int):
+        super().__init__()  # Вызов конструктора миксина
         self.name = name
         self.description = description
         self.__price = price  # Приватный атрибут для цены
@@ -18,9 +36,7 @@ class Product:
             self.__price = value
 
     def __repr__(self):
-        return (
-            f"Product(name={self.name}, price={self.price}, quantity={self.quantity})"
-        )
+        return f"Product(name={self.name}, price={self.price}, quantity={self.quantity})"
 
     def __add__(self, other):
         if type(self) != type(other):
@@ -29,18 +45,10 @@ class Product:
         return Product(self.name, self.description, self.price, total_quantity)
 
 
+# Класс смартфонов
 class Smartphone(Product):
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        price: float,
-        quantity: int,
-        efficiency: float,
-        model: str,
-        memory: int,
-        color: str,
-    ):
+    def __init__(self, name: str, description: str, price: float,
+                 quantity: int, efficiency: float, model: str, memory: int, color: str):
         super().__init__(name, description, price, quantity)
         self.efficiency = efficiency
         self.model = model
@@ -62,21 +70,13 @@ class Smartphone(Product):
             product_info["efficiency"],
             product_info["model"],
             product_info["memory"],
-            product_info["color"],
-        )
+            product_info["color"], )
 
 
+# Класс газонной травы
 class LawnGrass(Product):
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        price: float,
-        quantity: int,
-        country: str,
-        germination_period: int,
-        color: str,
-    ):
+    def __init__(self, name: str, description: str, price: float,
+                 quantity: int, country: str, germination_period: int, color: str):
         super().__init__(name, description, price, quantity)
         self.country = country
         self.germination_period = germination_period
@@ -96,10 +96,10 @@ class LawnGrass(Product):
             product_info["quantity"],
             product_info["country"],
             product_info["germination_period"],
-            product_info["color"],
-        )
+            product_info["color"], )
 
 
+# Класс категорий
 class Category:
     total_categories = 0
     product_count = 0
@@ -108,7 +108,6 @@ class Category:
         self.name = name
         self.description = description
         self.__products = []
-        # Увеличиваем количество категорий
         Category.total_categories += 1
 
     def add_product(self, product: Product):
@@ -121,11 +120,28 @@ class Category:
     def products(self):
         """Геттер для получения списка продуктов в строковом формате."""
         return "\n".join(
-            [
-                f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт."
-                for product in self.__products
-            ]
+            [f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт."
+             for product in self.__products]
         )
 
     def __repr__(self):
         return f"Category(name={self.name}, total_products={len(self.__products)})"
+
+
+# Класс заказа
+class Order:
+    def __init__(self, product: Product, quantity: int):
+        self.product = product
+        self.quantity = quantity
+        self.total_price = product.price * quantity
+
+    def __repr__(self):
+        return (f"Order(product={self.product.name}, quantity={self.quantity}, "
+                f"total_price={self.total_price})")
+
+
+# Абстрактный класс для заказов и категорий
+class BaseOrderandCategory(ABC):
+    @abstractmethod
+    def get_total(self):
+        pass
