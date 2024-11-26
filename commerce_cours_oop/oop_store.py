@@ -1,5 +1,9 @@
 from abc import ABC, abstractmethod
 
+# Исключение для случаев с нулевым количеством
+class ZeroQuantityError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
 
 # Абстрактный класс для продуктов
 class BaseProduct(ABC):
@@ -7,16 +11,16 @@ class BaseProduct(ABC):
     def __repr__(self):
         pass
 
-
 # Миксин для логирования
 class LoggingMixin:
     def __init__(self):
         print(f"Создан объект {self.__class__.__name__}")
 
-
 # Базовый класс для продуктов
 class Product(LoggingMixin, BaseProduct):
     def __init__(self, name: str, description: str, price: float, quantity: int):
+        if quantity <= 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         super().__init__()  # Вызов конструктора миксина
         self.name = name
         self.description = description
@@ -45,7 +49,6 @@ class Product(LoggingMixin, BaseProduct):
             raise TypeError("Нельзя складывать продукты разных типов.")
         total_quantity = self.quantity + other.quantity
         return Product(self.name, self.description, self.price, total_quantity)
-
 
 # Класс смартфонов
 class Smartphone(Product):
@@ -86,7 +89,6 @@ class Smartphone(Product):
             product_info["color"],
         )
 
-
 # Класс газонной травы
 class LawnGrass(Product):
     def __init__(
@@ -112,7 +114,7 @@ class LawnGrass(Product):
 
     @classmethod
     def new_product(cls, product_info):
-        """Создание новой травы газонной."""
+        """Создание новой газонной травы."""
         return cls(
             product_info["name"],
             product_info["description"],
@@ -122,7 +124,6 @@ class LawnGrass(Product):
             product_info["germination_period"],
             product_info["color"],
         )
-
 
 # Класс категорий
 class Category:
@@ -136,10 +137,27 @@ class Category:
         Category.total_categories += 1
 
     def add_product(self, product: Product):
-        if not isinstance(product, (Smartphone, LawnGrass, Product)):
-            raise TypeError("Можно добавлять только продукты или их наследники.")
-        self.__products.append(product)
-        Category.product_count += 1
+        try:
+            if product.quantity <= 0:
+                raise ZeroQuantityError("Товар с нулевым количеством не может быть добавлен.")
+            self.__products.append(product)
+            Category.product_count += 1
+            print("Товар добавлен.")
+        except ZeroQuantityError as e:
+            print(e)
+        finally:
+            print("Обработка добавления товара завершена.")
+
+    def average_price(self):
+        """Метод для подсчета среднего ценника товаров в категории."""
+        try:
+            if not self.__products:  # Если нет товаров
+                raise ZeroDivisionError("В категории нет товаров.")
+            total_price = sum(product.price for product in self.__products)
+            average = total_price / len(self.__products)
+            return average
+        except ZeroDivisionError:
+            return 0
 
     @property
     def products(self):
@@ -154,10 +172,11 @@ class Category:
     def __repr__(self):
         return f"Category(name={self.name}, total_products={len(self.__products)})"
 
-
 # Класс заказа
 class Order:
     def __init__(self, product: Product, quantity: int):
+        if quantity <= 0:
+            raise ZeroQuantityError("Товар с нулевым количеством не может быть добавлен в заказ.")
         self.product = product
         self.quantity = quantity
         self.total_price = product.price * quantity
@@ -167,7 +186,6 @@ class Order:
             f"Order(product={self.product.name}, quantity={self.quantity}, "
             f"total_price={self.total_price})"
         )
-
 
 # Абстрактный класс для заказов и категорий
 class BaseOrderandCategory(ABC):
