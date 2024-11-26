@@ -1,5 +1,23 @@
-class Product:
+from abc import ABC, abstractmethod
+
+
+# Абстрактный класс для продуктов
+class BaseProduct(ABC):
+    @abstractmethod
+    def __repr__(self):
+        pass
+
+
+# Миксин для логирования
+class LoggingMixin:
+    def __init__(self):
+        print(f"Создан объект {self.__class__.__name__}")
+
+
+# Базовый класс для продуктов
+class Product(LoggingMixin, BaseProduct):
     def __init__(self, name: str, description: str, price: float, quantity: int):
+        super().__init__()  # Вызов конструктора миксина
         self.name = name
         self.description = description
         self.__price = price  # Приватный атрибут для цены
@@ -29,6 +47,7 @@ class Product:
         return Product(self.name, self.description, self.price, total_quantity)
 
 
+# Класс смартфонов
 class Smartphone(Product):
     def __init__(
         self,
@@ -48,8 +67,10 @@ class Smartphone(Product):
         self.color = color
 
     def __repr__(self):
-        return (f"Smartphone({super().__repr__()}, efficiency={self.efficiency}, "
-                f"model={self.model}, memory={self.memory}, color={self.color})")
+        return (
+            f"Smartphone({super().__repr__()}, efficiency={self.efficiency}, "
+            f"model={self.model}, memory={self.memory}, color={self.color})"
+        )
 
     @classmethod
     def new_product(cls, product_info):
@@ -66,6 +87,7 @@ class Smartphone(Product):
         )
 
 
+# Класс газонной травы
 class LawnGrass(Product):
     def __init__(
         self,
@@ -83,8 +105,10 @@ class LawnGrass(Product):
         self.color = color
 
     def __repr__(self):
-        return (f"LawnGrass({super().__repr__()}, country={self.country}, "
-                f"germination_period={self.germination_period}, color={self.color})")
+        return (
+            f"LawnGrass({super().__repr__()}, country={self.country}, "
+            f"germination_period={self.germination_period}, color={self.color})"
+        )
 
     @classmethod
     def new_product(cls, product_info):
@@ -100,6 +124,7 @@ class LawnGrass(Product):
         )
 
 
+# Класс категорий
 class Category:
     total_categories = 0
     product_count = 0
@@ -108,7 +133,6 @@ class Category:
         self.name = name
         self.description = description
         self.__products = []
-        # Увеличиваем количество категорий
         Category.total_categories += 1
 
     def add_product(self, product: Product):
@@ -129,3 +153,24 @@ class Category:
 
     def __repr__(self):
         return f"Category(name={self.name}, total_products={len(self.__products)})"
+
+
+# Класс заказа
+class Order:
+    def __init__(self, product: Product, quantity: int):
+        self.product = product
+        self.quantity = quantity
+        self.total_price = product.price * quantity
+
+    def __repr__(self):
+        return (
+            f"Order(product={self.product.name}, quantity={self.quantity}, "
+            f"total_price={self.total_price})"
+        )
+
+
+# Абстрактный класс для заказов и категорий
+class BaseOrderandCategory(ABC):
+    @abstractmethod
+    def get_total(self):
+        pass
