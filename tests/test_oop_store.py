@@ -1,10 +1,12 @@
 import pytest
 
-from commerce_cours_oop.oop_store import Product, Category
+from commerce_cours_oop.oop_store import Category, Product
 
 
 def test_product_creation():
-    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+    with pytest.raises(
+        ValueError, match="Товар с нулевым количеством не может быть добавлен"
+    ):
         Product("Тест", "Описание", 100.0, 0)
 
 
@@ -19,4 +21,3 @@ def test_category_average_price():
     # Проверка для пустой категории
     empty_category = Category("Пустая категория", "Пусто")
     assert empty_category.average_price() == 0
-

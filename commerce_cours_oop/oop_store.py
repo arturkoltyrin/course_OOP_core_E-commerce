@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
 
+
 # Исключение для случаев с нулевым количеством
 class ZeroQuantityError(Exception):
     def __init__(self, message):
         super().__init__(message)
+
 
 # Абстрактный класс для продуктов
 class BaseProduct(ABC):
@@ -11,10 +13,12 @@ class BaseProduct(ABC):
     def __repr__(self):
         pass
 
+
 # Миксин для логирования
 class LoggingMixin:
     def __init__(self):
         print(f"Создан объект {self.__class__.__name__}")
+
 
 # Базовый класс для продуктов
 class Product(LoggingMixin, BaseProduct):
@@ -49,6 +53,7 @@ class Product(LoggingMixin, BaseProduct):
             raise TypeError("Нельзя складывать продукты разных типов.")
         total_quantity = self.quantity + other.quantity
         return Product(self.name, self.description, self.price, total_quantity)
+
 
 # Класс смартфонов
 class Smartphone(Product):
@@ -89,6 +94,7 @@ class Smartphone(Product):
             product_info["color"],
         )
 
+
 # Класс газонной травы
 class LawnGrass(Product):
     def __init__(
@@ -125,6 +131,7 @@ class LawnGrass(Product):
             product_info["color"],
         )
 
+
 # Класс категорий
 class Category:
     total_categories = 0
@@ -139,7 +146,9 @@ class Category:
     def add_product(self, product: Product):
         try:
             if product.quantity <= 0:
-                raise ZeroQuantityError("Товар с нулевым количеством не может быть добавлен.")
+                raise ZeroQuantityError(
+                    "Товар с нулевым количеством не может быть добавлен."
+                )
             self.__products.append(product)
             Category.product_count += 1
             print("Товар добавлен.")
@@ -172,11 +181,14 @@ class Category:
     def __repr__(self):
         return f"Category(name={self.name}, total_products={len(self.__products)})"
 
+
 # Класс заказа
 class Order:
     def __init__(self, product: Product, quantity: int):
         if quantity <= 0:
-            raise ZeroQuantityError("Товар с нулевым количеством не может быть добавлен в заказ.")
+            raise ZeroQuantityError(
+                "Товар с нулевым количеством не может быть добавлен в заказ."
+            )
         self.product = product
         self.quantity = quantity
         self.total_price = product.price * quantity
@@ -186,6 +198,7 @@ class Order:
             f"Order(product={self.product.name}, quantity={self.quantity}, "
             f"total_price={self.total_price})"
         )
+
 
 # Абстрактный класс для заказов и категорий
 class BaseOrderandCategory(ABC):
