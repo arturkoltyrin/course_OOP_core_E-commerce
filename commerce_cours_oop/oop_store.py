@@ -1,6 +1,12 @@
 from abc import ABC, abstractmethod
 
 
+# Исключение для случаев с нулевым количеством
+class ZeroQuantityError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
 # Абстрактный класс для продуктов
 class BaseProduct(ABC):
     @abstractmethod
@@ -17,6 +23,8 @@ class LoggingMixin:
 # Базовый класс для продуктов
 class Product(LoggingMixin, BaseProduct):
     def __init__(self, name: str, description: str, price: float, quantity: int):
+        if quantity <= 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         super().__init__()  # Вызов конструктора миксина
         self.name = name
         self.description = description
@@ -112,7 +120,7 @@ class LawnGrass(Product):
 
     @classmethod
     def new_product(cls, product_info):
-        """Создание новой травы газонной."""
+        """Создание новой газонной травы."""
         return cls(
             product_info["name"],
             product_info["description"],
@@ -136,10 +144,29 @@ class Category:
         Category.total_categories += 1
 
     def add_product(self, product: Product):
-        if not isinstance(product, (Smartphone, LawnGrass, Product)):
-            raise TypeError("Можно добавлять только продукты или их наследники.")
-        self.__products.append(product)
-        Category.product_count += 1
+        try:
+            if product.quantity <= 0:
+                raise ZeroQuantityError(
+                    "Товар с нулевым количеством не может быть добавлен."
+                )
+            self.__products.append(product)
+            Category.product_count += 1
+            print("Товар добавлен.")
+        except ZeroQuantityError as e:
+            print(e)
+        finally:
+            print("Обработка добавления товара завершена.")
+
+    def average_price(self):
+        """Метод для подсчета среднего ценника товаров в категории."""
+        try:
+            if not self.__products:  # Если нет товаров
+                raise ZeroDivisionError("В категории нет товаров.")
+            total_price = sum(product.price for product in self.__products)
+            average = total_price / len(self.__products)
+            return average
+        except ZeroDivisionError:
+            return 0
 
     @property
     def products(self):
@@ -158,6 +185,10 @@ class Category:
 # Класс заказа
 class Order:
     def __init__(self, product: Product, quantity: int):
+        if quantity <= 0:
+            raise ZeroQuantityError(
+                "Товар с нулевым количеством не может быть добавлен в заказ."
+            )
         self.product = product
         self.quantity = quantity
         self.total_price = product.price * quantity
